@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Security, status
 from fastapi.security import APIKeyHeader
+# Подключите ваши модули работы с базой данных (psycopg2 / SQLAlchemy)
 
 app = FastAPI()
 
@@ -14,8 +15,16 @@ async def verify_api_key(api_key: str = Security(api_key_header)):
         )
     return api_key
 
-# Применяем защиту к ручке создания пользователя
+# 1. Запрос на получение всех пользователей (GET /users)
+@app.get("/users", status_code=200)
+async def get_users():
+    # Здесь должен быть SQL-запрос SELECT * FROM users;
+    # Возвращает массив пользователей: [{"id": 1, "name": "..."}, ...]
+    return users_list_from_db
+
+# 2. Запрос на создание пользователя (POST /users) с защитой API Key
 @app.post("/users", status_code=201, dependencies=[Security(verify_api_key)])
 async def create_user(user: dict):
-    # Ваша логика создания пользователя
-    return user
+    # Здесь должен быть SQL-запрос INSERT INTO users ... RETURNING id, name, email, created_at;
+    # Важно: возврат должен содержать созданный ID из базы!
+    return created_user_with_id_from_db
