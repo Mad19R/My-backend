@@ -3,7 +3,6 @@ from fastapi.security import APIKeyHeader
 
 app = FastAPI()
 
-# Define secret key and header parameter
 API_KEY = "my-secret-key-123"
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
@@ -15,8 +14,8 @@ async def verify_api_key(api_key: str = Security(api_key_header)):
         )
     return api_key
 
-# Example protected endpoint (POST /users)
+# Применяем защиту к ручке создания пользователя
 @app.post("/users", status_code=201, dependencies=[Security(verify_api_key)])
 async def create_user(user: dict):
-    # Твоя логика сохранения пользователя
+    # Ваша логика создания пользователя
     return user
